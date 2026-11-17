@@ -1,0 +1,9 @@
+"Patch"
+{
+	include "materials\models\player\engineer\engineer_red_hand_right.vmt"
+
+	insert
+	{
+		"$basetexture" "models\player\engineer\blue\engineer_blue_hand_right"
+	}
+}

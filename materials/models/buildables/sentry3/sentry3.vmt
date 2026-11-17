@@ -1,0 +1,36 @@
+VertexLitGeneric
+{
+	"$basetexture"	"models\buildables\sentry3\Sentry3"
+	"$bumpmap" 	"models\buildables\sentry3\Sentry3_normal"
+	"$nodecal" "1"
+	"$phong" "1"
+	"$phongboost" "1.5"
+	"$phongexponent" "15"
+	"$lightwarptexture" "models\buildables\sentry1\Sentry1_lightwarp"
+	"$phongfresnelranges"	"[.5 1.5 5]"
+	<dx90
+	{
+		"$selfillum" "1"
+	}
+
+
+	"$rimlight" "1"		
+	"$rimlightexponent" "4"				
+	"$rimlightboost" "1.5"
+	
+	"Proxies"
+	{
+		"ConVarEx"
+		{
+ 			"ConVar" "tf2c_player_nohalflambert"
+  			"0"
+  	  		{
+  	   			"$PhongDisableHalfLambert"  "0"
+  	  		}
+  	 		"1"
+  	 		{
+  	 			"$PhongDisableHalfLambert"  "1"
+  	 		}
+		}
+	}
+}

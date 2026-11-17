@@ -1,0 +1,9 @@
+"Patch"
+{
+	include "materials/models/buildables/dispenser/dispenser_upgrades_red.vmt"
+	
+	insert
+	{
+	"$basetexture"	"models/buildables/dispenser/dispenser_upgrades_blue"
+	}
+}
