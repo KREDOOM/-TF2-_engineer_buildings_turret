@@ -17,11 +17,15 @@ SWEP.Secondary.Automatic = false
 SWEP.Secondary.Ammo = "none"
 
 SWEP.Weight = 5
+--SWEP.AutoSwitchTo = false
+--SWEP.AutoSwitchFrom = false
+
 SWEP.Slot = 0
 SWEP.SlotPos = 1
 SWEP.DrawAmmo = false
 SWEP.DrawCrosshair = true
 
+-- Оригинальные модели Гаечного ключа Инженера TF2
 SWEP.ViewModel = "models/weapons/v_models/v_wrench_engineer.mdl" 
 SWEP.WorldModel = "models/weapons/w_models/w_wrench.mdl"
 SWEP.UseHands = false
@@ -67,6 +71,93 @@ if CLIENT then
 		weight = 800,
 		antialias = true
 	})
+end
+
+if CLIENT then
+	local WRENCH_WORLD_MODEL = "models/weapons/w_models/w_wrench.mdl"
+	local WRENCH_BONES = {
+		"right hand", -- кость, заданная для модели персонажа
+		"ValveBiped.Bip01_R_Hand", -- запасной вариант для стандартных playermodel'ов GMod
+		"bip_hand_R",
+		"Bip01_R_Hand",
+	}
+	local WRENCH_OFFSET = Vector(3, 2.5, 0.8)
+	local WRENCH_ANGLE = Angle(12, 0, 180)
+	local WRENCH_SCALE = 0.75
+
+	function SWEP:GetTF2WrenchWorldModel()
+		if IsValid(self.TF2WrenchWorldModel) then
+			return self.TF2WrenchWorldModel
+		end
+
+		local mdl = ClientsideModel(WRENCH_WORLD_MODEL, RENDERGROUP_OPAQUE)
+		if not IsValid(mdl) then return nil end
+
+		mdl:SetNoDraw(true)
+		self.TF2WrenchWorldModel = mdl
+		return mdl
+	end
+
+	function SWEP:DrawWorldModel()
+		local owner = self:GetOwner()
+
+		-- Не рисуем отдельную world-модель у локального игрока в первом лице.
+		if owner == LocalPlayer() and not owner:ShouldDrawLocalPlayer() then return end
+
+		-- Если ключ лежит на карте, используем обычную отрисовку оружия.
+		if not IsValid(owner) or not owner:IsPlayer() then
+			self:DrawModel()
+			return
+		end
+
+		local bone
+		for _, boneName in ipairs(WRENCH_BONES) do
+			bone = owner:LookupBone(boneName)
+			if bone then break end
+		end
+
+		if not bone then
+			self:DrawModel()
+			return
+		end
+
+		local bonePos, boneAng = owner:GetBonePosition(bone)
+		if not bonePos or not boneAng then
+			self:DrawModel()
+			return
+		end
+
+		local mdl = self:GetTF2WrenchWorldModel()
+		if not IsValid(mdl) then return end
+
+		-- Позиция: 3, -2.5, 0.8 относительно right hand.
+		local drawPos = bonePos
+		local drawAng = Angle(boneAng.p, boneAng.y, boneAng.r)
+		drawPos = drawPos
+			+ drawAng:Forward() * WRENCH_OFFSET.x
+			+ drawAng:Right() * WRENCH_OFFSET.y
+			+ drawAng:Up() * WRENCH_OFFSET.z
+
+		-- Поворот: -12, 0, 180 относительно осей кости.
+		drawAng:RotateAroundAxis(drawAng:Up(), WRENCH_ANGLE.y)
+		drawAng:RotateAroundAxis(drawAng:Right(), WRENCH_ANGLE.p)
+		drawAng:RotateAroundAxis(drawAng:Forward(), WRENCH_ANGLE.r)
+
+		mdl:SetPos(drawPos)
+		mdl:SetAngles(drawAng)
+
+		local matrix = Matrix()
+		matrix:Scale(Vector(WRENCH_SCALE, WRENCH_SCALE, WRENCH_SCALE))
+		mdl:EnableMatrix("RenderMultiply", matrix)
+		mdl:SetupBones()
+		mdl:DrawModel()
+	end
+
+	function SWEP:OnRemove()
+		if IsValid(self.TF2WrenchWorldModel) then
+			self.TF2WrenchWorldModel:Remove()
+		end
+	end
 end
 
 function SWEP:Initialize()
