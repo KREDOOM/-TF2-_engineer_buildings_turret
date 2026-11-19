@@ -1,7 +1,5 @@
 TF2_ENG = TF2_ENG or {}
 
-util.AddNetworkString("TF2_OpenBuildMenu")
-util.AddNetworkString("TF2_OpenDestroyMenu")
 util.AddNetworkString("TF2_StartPlacement")
 util.AddNetworkString("TF2_PlaceBuilding")
 util.AddNetworkString("TF2_DestroyBuilding")
@@ -191,23 +189,5 @@ net.Receive("TF2_SwitchTeamSkin", function(len, ply)
 		if IsValid(bEnt) and bEnt.SetBuildingSkin then
 			bEnt:SetBuildingSkin(newSkin)
 		end
-	end
-end)
-
--- Команды в чате
-hook.Add("PlayerSay", "TF2_ENG.ChatCommands", function(ply, text)
-	local txt = string.lower(string.Trim(text))
-	if txt == "!build" or txt == "/build" then
-		net.Start("TF2_OpenBuildMenu")
-		net.Send(ply)
-		return ""
-	elseif txt == "!destroy" or txt == "/destroy" then
-		net.Start("TF2_OpenDestroyMenu")
-		net.Send(ply)
-		return ""
-	elseif txt == "!tf2metal" or txt == "/tf2metal" then
-		ply:TF2_SetMetal(200)
-		ply:ChatPrint("[TF2 Engineer] Запас металла пополнен до максимума (200)!")
-		return ""
 	end
 end)
