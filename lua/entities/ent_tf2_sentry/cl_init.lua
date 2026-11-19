@@ -64,6 +64,11 @@ if CLIENT then
 		killicon.Add(class, matPath, kfColor)
 	end
 
+	-- Реальный класс турели: киллфид запрашивает его, если подмена уровня не сработала
+	-- (например, смерти некстботов или нестандартные геймоды)
+	AddSentryKillicon("ent_tf2_sentry", "hud/killicons/d_sentry1")
+
+	-- Виртуальные классы по уровням (подставляются серверным хуком при смерти игроков и NPC)
 	AddSentryKillicon("ent_tf2_sentry_lvl1", "hud/killicons/d_sentry1")
 	AddSentryKillicon("ent_tf2_sentry_lvl2", "hud/killicons/d_sentry2")
 	AddSentryKillicon("ent_tf2_sentry_lvl3", "hud/killicons/d_sentry3")

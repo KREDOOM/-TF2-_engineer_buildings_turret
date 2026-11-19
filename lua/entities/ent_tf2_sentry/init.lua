@@ -533,19 +533,37 @@ hook.Add("PlayerBindPress", "TF2_Sentry_Control_Block", function(ply, bind, pres
 	end
 end)
 
-hook.Add("PlayerDeath", "TF2_Sentry_Killicon_LevelFix", function(victim, inflictor, attacker)
-	if IsValid(inflictor) and inflictor:GetClass() == "ent_tf2_sentry" then
-		local lvl = inflictor.Level or 1
-		local virtualClass = "ent_tf2_sentry_lvl" .. lvl
-		
-		inflictor.GetClassOld = inflictor.GetClass
-		inflictor.GetClass = function(self) return virtualClass end
-		
-		timer.Simple(0, function()
-			if IsValid(inflictor) and inflictor.GetClassOld then
-				inflictor.GetClass = inflictor.GetClassOld
-				inflictor.GetClassOld = nil
-			end
-		end)
+-- Подмена класса инфликтора на виртуальный с уровнем турели,
+-- чтобы киллфид показывал иконку соответствующего уровня.
+local function SentryKilliconLevelFix(victim, inflictor, attacker)
+	if not IsValid(inflictor) then return end
+
+	local class = inflictor:GetClass()
+	local lvl
+
+	if class == "ent_tf2_sentry" then
+		lvl = inflictor.Level or 1
+	elseif class == "ent_tf2_sentry_rocket" then
+		-- Урон наносит ракета, а не турель: берём уровень выпустившей её турели (ракеты есть только на 3 уровне)
+		lvl = IsValid(inflictor.Sentry) and (inflictor.Sentry.Level or 3) or 3
+	else
+		return
 	end
-end)
+
+	local virtualClass = "ent_tf2_sentry_lvl" .. lvl
+
+	inflictor.GetClassOld = inflictor.GetClass
+	inflictor.GetClass = function(self) return virtualClass end
+
+	timer.Simple(0, function()
+		if IsValid(inflictor) and inflictor.GetClassOld then
+			inflictor.GetClass = inflictor.GetClassOld
+			inflictor.GetClassOld = nil
+		end
+	end)
+end
+
+hook.Add("PlayerDeath", "TF2_Sentry_Killicon_LevelFix", SentryKilliconLevelFix)
+-- Смерти NPC обрабатываются через OnNPCKilled, а не PlayerDeath: без этого хука киллфид
+-- запрашивал иконку по реальному классу "ent_tf2_sentry" и показывал череп-заглушку
+hook.Add("OnNPCKilled", "TF2_Sentry_Killicon_LevelFix_NPC", SentryKilliconLevelFix)
