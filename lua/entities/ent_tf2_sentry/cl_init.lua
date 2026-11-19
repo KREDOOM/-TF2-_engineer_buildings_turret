@@ -56,7 +56,6 @@ end
 
 if CLIENT then
 	local kfColor = Color(255, 255, 255, 255)
-
 	-- Оригинальные TF2 killicon'ы, если отсутствуют — используем иконку энтити из спавнменю
 	local function AddSentryKillicon(class, matPath)
 		if not file.Exists("materials/" .. matPath .. ".vmt", "GAME") then
