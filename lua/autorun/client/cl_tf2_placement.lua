@@ -107,7 +107,7 @@ hook.Add("PlayerBindPress", "TF2_ENG.PlacementKeys", function(ply, bind, pressed
 
 	if string.find(bind, "+attack2") then
 		ghostYaw = (ghostYaw + 90) % 360
-		surface.PlaySound("weapons/weapon_draw_01.wav")
+		surface.PlaySound("weapons/draw_default.wav")
 		return true
 	elseif string.find(bind, "+attack") then
 		local lp = LocalPlayer()
