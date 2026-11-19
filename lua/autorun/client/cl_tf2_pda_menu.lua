@@ -331,3 +331,12 @@ function TF2_ENG.OpenPDAMenu(isDestroy)
 		end
 	end
 end
+
+-- Приём команд открытия меню от сервера (чат-команды !build / !destroy)
+net.Receive("TF2_OpenBuildMenu", function()
+	TF2_ENG.OpenPDAMenu(false)
+end)
+
+net.Receive("TF2_OpenDestroyMenu", function()
+	TF2_ENG.OpenPDAMenu(true)
+end)

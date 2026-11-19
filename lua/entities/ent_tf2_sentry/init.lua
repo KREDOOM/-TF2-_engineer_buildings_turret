@@ -394,7 +394,7 @@ function ENT:FireBulletAtTarget(targetPos)
 	local isDual = (self.Level >= 2)
 
 	local function BulletCallback(att, tr, dmg)
-		if IsValid(tr.Entity) and not tr.Entity:IsPlayer() and not tr.Entity:IsNPC() and not tr.Entity.TF2_Building then
+		if IsValid(tr.Entity) and not tr.Entity:IsPlayer() and not tr.Entity:IsNPC() and not tr.Entity.TF2_Building and not tr.Entity.IsTF2Building and not tr.Entity.BuildingType then
 			constraint.RemoveConstraints(tr.Entity, "Weld")
 			local p = tr.Entity:GetPhysicsObject()
 			if IsValid(p) then p:EnableMotion(true) p:Wake() end

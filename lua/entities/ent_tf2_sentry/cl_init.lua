@@ -56,7 +56,16 @@ end
 
 if CLIENT then
 	local kfColor = Color(255, 255, 255, 255)
-	killicon.Add("ent_tf2_sentry_lvl1", "hud/killicons/d_sentry1", kfColor)
-	killicon.Add("ent_tf2_sentry_lvl2", "hud/killicons/d_sentry2", kfColor)
-	killicon.Add("ent_tf2_sentry_lvl3", "hud/killicons/d_sentry3", kfColor)
+
+	-- Оригинальные TF2 killicon'ы, если отсутствуют — используем иконку энтити из спавнменю
+	local function AddSentryKillicon(class, matPath)
+		if not file.Exists("materials/" .. matPath .. ".vmt", "GAME") then
+			matPath = "vgui/entities/ent_tf2_sentry"
+		end
+		killicon.Add(class, matPath, kfColor)
+	end
+
+	AddSentryKillicon("ent_tf2_sentry_lvl1", "hud/killicons/d_sentry1")
+	AddSentryKillicon("ent_tf2_sentry_lvl2", "hud/killicons/d_sentry2")
+	AddSentryKillicon("ent_tf2_sentry_lvl3", "hud/killicons/d_sentry3")
 end
